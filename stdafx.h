@@ -1,12 +1,16 @@
 #pragma once
 
-#define _WIN32_WINNT 0x501
-#define WIN32_LEAN_AND_MEAN
+#ifndef WINVER
+#define WINVER 0x601
+#endif
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x601
+#endif
+#ifndef _WIN32_WINDOWS
+#define _WIN32_WINDOWS 0x601
+#endif
 
-#include <windows.h>
-#include <ActivScp.h>
-#include <ShellApi.h>
-
-#include "../ATLHelpers/ATLHelpers.h"
+#include <helpers/foobar2000+atl.h>
+#include "version.h"
 
 #include <unordered_map>

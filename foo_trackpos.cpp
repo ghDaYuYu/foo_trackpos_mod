@@ -1,15 +1,17 @@
 #include "stdafx.h"
+#include "version.h"
 
-#define VERSION "1.1"
-
-DECLARE_COMPONENT_VERSION( "Track Positioner", VERSION,
+DECLARE_COMPONENT_VERSION(COMPONENT_NAME_HC, FOO_COMPONENT_VERSION,
 	"This compoment allows you to place tracks in the playlist after the currently playing track\n"
 	"by Chronial\n"
 	"\n"
-	"Version: " VERSION "\n"
-	"Compiled: " __DATE__ " - " __TIME__ );
+	"Mod: dark mode and x64 binary (v1.1.1) by da yuyu\n"
+	"\n"
+	"Version: " FOO_COMPONENT_VERSION "\n"
+	"Compiled: " __DATE__ "\n"
+	"fb2k SDK: " PLUGIN_FB2K_SDK);
 
-VALIDATE_COMPONENT_FILENAME("foo_trackpos.dll");
+VALIDATE_COMPONENT_FILENAME("foo_trackpos_mod.dll");
 
 
 extern cfg_bool cfgMovePlaylistContext;
@@ -20,15 +22,6 @@ extern cfg_bool cfgEnqueueOnLock;
 extern cfg_bool cfgSetPlaybackOrder;
 extern cfg_bool cfgNoPlayPlace;
 
-
-char * guidToSource (GUID guid){
-	char * out = new char[100];
-	sprintf_s(out,100, "{ 0x%x, 0x%x, 0x%x, { 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x } }",
-		guid.Data1, guid.Data2, guid.Data3,
-		(int)guid.Data4[0], (int)guid.Data4[1], (int)guid.Data4[2], (int)guid.Data4[3],
-		(int)guid.Data4[4], (int)guid.Data4[5], (int)guid.Data4[6], (int)guid.Data4[7]);
-	return out;
-}
 
 bool getCurrentLocation(t_size * playlist, t_size * trackindex){
 	static_api_ptr_t<playlist_manager> pm;
@@ -95,11 +88,11 @@ void placeAfterCurrent(const pfc::list_base_const_t<metadb_handle_ptr> & p_data,
 				if (i == playingIndex){
 					playingIndex = i + delta; // we need this to focus the track later.
 											  // can do this as delta will be <= 0 when we reach playingIndex so i == playingIndex won't be true again
-					insertPos = i + delta + 1;
+					insertPos = static_cast<int>(i + delta + 1);
 					for (t_size j = 0; j < n; j++){
 						newOrder[insertPos++] = toInsert[j];
 					}
-					delta += moveCount;
+					delta += static_cast<int>(moveCount);
 				}
 			} else if (insertPos == -1){
 				toInsert[n++] = i;
@@ -173,8 +166,8 @@ class my_contextmenu : public contextmenu_item_simple {
 		placeAfterCurrent(p_data,(p_caller == this->caller_playlist));
 	};
 	virtual GUID get_item_guid(unsigned p_index){
-		// {b5889b2b-6d8e-4932-82ed-d20a7a54be5d}
-		static const GUID guid_contextAddAfterPlaying = { 0xb5889b2b, 0x6d8e, 0x4932, { 0x82, 0xed, 0xd2, 0xa, 0x7a, 0x54, 0xbe, 0x5d } };
+		// {B25EA664-4CF5-480B-8372-85A6B6F82DD0} mod
+		static const GUID guid_contextAddAfterPlaying = { 0xb25ea664, 0x4cf5, 0x480b, { 0x83, 0x72, 0x85, 0xa6, 0xb6, 0xf8, 0x2d, 0xd0 } };
 		return guid_contextAddAfterPlaying;
 	}
 	virtual bool get_item_description(unsigned p_index,pfc::string_base & p_out){
